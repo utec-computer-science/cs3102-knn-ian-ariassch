@@ -39,22 +39,18 @@ float distance(coord_t a, coord_t b)
   return abs((sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))));
 }
 
-bool secondsort(const pair<coord_t,float> &a,
-              const pair<coord_t,float> &b)
-{
-    return (a.second < b.second);
-}
-
 vector<coord_t> knn ( int k, vector<coord_t> &points, const coord_t &q)
 {
-  vector<pair<coord_t, float>> distances;
+  multimap<float, coord_t> distances;
   vector<coord_t> result;
-  for (auto it = points.begin(); it != points.end(); it++) {
-    distances.push_back(make_pair((*it), distance(q, *it)));
-    sort(distances.begin(), distances.end(), secondsort);
+  for (auto it = points.begin(); it != points.end(); it++) 
+  {
+    distances.insert(pair<float,coord_t>(distance(*it, q), *it));
   }
+  auto mapit = distances.begin();
   for (int i = 0; i < k; i++) {
-    result.push_back(distances[i].first);
+    result.push_back((*mapit).second);
+    mapit++;
   }
   return result;
 
